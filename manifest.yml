@@ -1,0 +1,10 @@
+modules:
+  confluence:contextMenu:
+    - key: priorwise-hello-world
+      function: main
+      title: PriorWise
+  function:
+    - key: main
+      handler: index.run
+app:
+  id: ari:cloud:ecosystem::app/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b
