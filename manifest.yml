@@ -3,8 +3,14 @@ modules:
     - key: priorwise-hello-world
       function: main
       title: PriorWise
+      description: Easily scan your work in Confluence for prior art using AI
   function:
     - key: main
       handler: index.run
 app:
   id: ari:cloud:ecosystem::app/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b
+permissions:
+  external:
+    fetch:
+      backend:
+        - 'https://api.projectpq.ai/*'
