@@ -52,10 +52,10 @@ const App = () => {
   return (
     <InlineDialog>
       <Heading size="large">PriorWise Prior Art Check</Heading>
-      <Text>Top 10 patents most similar to your selection:</Text>
+      <Text>Top patents most similar to your selection:</Text>
       <Table>
         <Head></Head>
-        {Object.keys(data.results).map((pat) => (
+        {Object.keys(data.results).reverse().map((pat) => (
           <Row>
             <Cell>
               <Heading size="medium">{data.results[pat].title}</Heading>
@@ -63,6 +63,9 @@ const App = () => {
               <Text>
                 <Strong>Author: </Strong>
                 {data.results[pat].alias}
+              </Text>
+              <Text>
+                <Strong>PriorWise Similarity Score: {Math.round(data.results[pat].score * 100)}%</Strong>
               </Text>
               <Text>
                 <Strong>Published: </Strong>
