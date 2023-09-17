@@ -1,4 +1,4 @@
-import ForgeUI, { render, ContextMenu, InlineDialog, Text, Strong, useProductContext, useState } from '@forge/ui';
+import ForgeUI, { render, ContextMenu, InlineDialog, Table, Head, Row, Cell, Text, Strong, Heading, Link, Image, useProductContext, useState } from '@forge/ui';
 import { fetch } from '@forge/api';
 
 
@@ -16,8 +16,7 @@ const App = () => {
   const [data] = useState(async () => {
     const endpoint = "https://api.projectpq.ai"; 
     const route = "/search/102?"; 
-    var url = endpoint + route; 
-    var token = getPQAIAPIKey();
+    var url = endpoint + route;
     const q = { q: selectedText, // search query with the user's selected text
                 n: 10, // return 10 results 
                 type: "patent", // exclude research papers
@@ -29,13 +28,29 @@ const App = () => {
       headers: {'Content-Type': 'application/json'}
     });
     const data = await response.text();
-    return data;
+    const res = JSON.parse(data);
+    return res;
   })
 
   return (
     <InlineDialog>
-      <Text><Strong>PriorWise Prior Art Check</Strong></Text>
-      <Text>{data}</Text>
+      <Heading size="large">PriorWise Prior Art Check</Heading>
+      <Text>Top 10 patents most similar to your selection:</Text>
+      <Table>
+      <Head></Head>
+      {Object.keys(data.results).map(pat => (
+        <Row>
+        <Cell>
+        <Heading size="medium">{data.results[pat].title}</Heading>
+        <Image src={data.results[pat].image}/>
+        <Text><Strong>Author: </Strong>{data.results[pat].alias}</Text>
+        <Text><Strong>Published: </Strong>{data.results[pat].publication_date}</Text>
+        <Text><Strong>ID: </Strong>{data.results[pat].id}</Text>
+        <Text><Strong>Link: </Strong><Link href={data.results[pat].www_link}>{data.results[pat].www_link}</Link></Text>
+        </Cell>
+        </Row>
+      ))}
+    </Table>
     </InlineDialog>
   );
 };
