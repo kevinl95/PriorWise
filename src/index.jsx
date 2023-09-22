@@ -37,7 +37,7 @@ const App = () => {
     var url = endpoint + route;
     const q = {
       q: selectedText, // search query with the user's selected text
-      n: 30, // Get at least 20 results
+      n: 30, // Get at least 30 results
       type: "patent", // exclude research papers
       token: getPQAIAPIKey(),
     };
