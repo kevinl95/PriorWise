@@ -1,6 +1,7 @@
 import ForgeUI, {
   render,
   ContextMenu,
+  ContentBylineItem,
   InlineDialog,
   Table,
   Head,
@@ -16,7 +17,8 @@ import ForgeUI, {
   Tabs, 
   Tab
 } from "@forge/ui";
-import { fetch } from "@forge/api";
+import api, {route, fetch} from "@forge/api";
+
 
 /**
  * Set the PQAI API Key as follows:
@@ -27,16 +29,52 @@ const getPQAIAPIKey = () => {
   return process.env.PQAI_API_KEY;
 };
 
+async function getPageText(api, contentId) {
+    // https://developer.atlassian.com/cloud/confluence/rest/#api-api-content-id-get
+    // status=any is necessary to support pages in draft
+    const contentPath = route`/wiki/rest/api/content/${contentId}?status=any&expand=body.atlas_doc_format`;
+    const res = await api
+      .asUser()
+      .requestConfluence(contentPath);
+    const responseData = await res.json();
+    if (responseData.code) {
+      console.log('Response data:\n' + JSON.stringify(responseData, null, 2));
+      return undefined;
+    } else {
+      const adfJson = responseData.body.atlas_doc_format.value;
+      console.log(adfJson);
+      const adf = JSON.parse(adfJson);
+      const content = adf.content;
+      var retStr = "";
+      var arrayLength = content.length;
+      for (var i = 0; i < arrayLength; i++) {
+          const val = content[i].content[0];
+          if (val.hasOwnProperty("text")) {
+            retStr = retStr + val.text + " ";
+          }
+      }
+      console.log(retStr);
+      return retStr;
+    }
+  };
+
 const App = () => {
   const {
     extensionContext: { selectedText },
   } = useProductContext();
   const [data] = useState(async () => {
+    const context = useProductContext();
+    var searchText = selectedText;
+    if (selectedText === undefined) {
+      const adf = await getPageText(api, context.contentId);
+      searchText = adf;
+    }
+    console.log(searchText);
     const endpoint = "https://api.projectpq.ai";
     const route = "/search/102?";
     var url = endpoint + route;
     const q = {
-      q: selectedText, // search query with the user's selected text
+      q: searchText, // search query with the user's selected text
       n: 30, // Get at least 30 results
       type: "patent", // exclude research papers
       token: getPQAIAPIKey(),
@@ -54,7 +92,7 @@ const App = () => {
   return (
     <InlineDialog>
       <Heading size="large">PriorWise Prior Art Check</Heading>
-      <Text>Top patents most similar to your selection:</Text>
+      <Text>Top patents most similar to your text:</Text>
       <Tabs>
         <Tab label="Results">
           <Table>
@@ -129,8 +167,14 @@ const App = () => {
   );
 };
 
-export const run = render(
+export const inlineRun = render(
   <ContextMenu>
     <App />
   </ContextMenu>
+);
+
+export const fullpageRun = render(
+  <ContentBylineItem>
+      <App/>
+  </ContentBylineItem>
 );

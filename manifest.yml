@@ -1,15 +1,26 @@
 modules:
   confluence:contextMenu:
-    - key: priorwise-hello-world
-      function: main
+    - key: priorwise-search
+      function: inline
       title: PriorWise
       description: Easily scan your work in Confluence for prior art using AI
+  confluence:contentBylineItem:
+    - key: priorwise-fullpage
+      title: Full Page Patent Search
+      function: fullPage
+      icon: https://svgshare.com/i/xng.svg
+      tooltip: Search the entire content of this page for prior art using PriorWise
+      description: Easily scan your work in Confluence for prior art using AI
   function:
-    - key: main
-      handler: index.run
+    - key: inline
+      handler: index.inlineRun
+    - key: fullPage
+      handler: index.fullpageRun
 app:
   id: ari:cloud:ecosystem::app/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b
 permissions:
+  scopes: 
+    - read:content-details:confluence
   external:
     fetch:
       backend:
