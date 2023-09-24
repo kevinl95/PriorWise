@@ -46,7 +46,6 @@ async function getPageText(api, contentId) {
       return undefined;
     } else {
       const adfJson = responseData.body.atlas_doc_format.value;
-      console.log(adfJson);
       const adf = JSON.parse(adfJson);
       const content = adf.content;
       var retStr = "";
@@ -195,7 +194,7 @@ const Settings = () => {
   if (excludePapers === undefined) {
     excludePapers = true;
   }
-  else if (excludePapers == "patents") {
+  else if (excludePapers == "patent") {
     excludePapers = true;
   } else {
     excludePapers = false;
@@ -216,7 +215,7 @@ const Settings = () => {
     setFormState(formData);
     storage.set('numResults', formData.numResults);
     if (formData.excludePapers) {
-      storage.set('excludePapers', "patents");
+      storage.set('excludePapers', "patent");
     } else {
       storage.set('excludePapers', "npl");
     }
