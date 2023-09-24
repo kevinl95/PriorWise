@@ -2,6 +2,7 @@ import ForgeUI, {
   render,
   ContextMenu,
   ContentBylineItem,
+  GlobalSettings,
   InlineDialog,
   Table,
   Head,
@@ -15,9 +16,13 @@ import ForgeUI, {
   useProductContext,
   useState,
   Tabs, 
-  Tab
+  Tab,
+  Form,
+  Fragment,
+  Toggle,
+  Range
 } from "@forge/ui";
-import api, {route, fetch} from "@forge/api";
+import api, {route, fetch, storage} from "@forge/api";
 
 
 /**
@@ -38,7 +43,6 @@ async function getPageText(api, contentId) {
       .requestConfluence(contentPath);
     const responseData = await res.json();
     if (responseData.code) {
-      console.log('Response data:\n' + JSON.stringify(responseData, null, 2));
       return undefined;
     } else {
       const adfJson = responseData.body.atlas_doc_format.value;
@@ -53,7 +57,6 @@ async function getPageText(api, contentId) {
             retStr = retStr + val.text + " ";
           }
       }
-      console.log(retStr);
       return retStr;
     }
   };
@@ -63,20 +66,27 @@ const App = () => {
     extensionContext: { selectedText },
   } = useProductContext();
   const [data] = useState(async () => {
+    var numResults = await storage.get('numResults');
+    if (numResults === undefined) {
+      numResults = 30
+    }
+    var excludePapers = await storage.get('excludePapers');
+    if (excludePapers === undefined) {
+      excludePapers = "patent";
+    }
     const context = useProductContext();
     var searchText = selectedText;
     if (selectedText === undefined) {
       const adf = await getPageText(api, context.contentId);
       searchText = adf;
     }
-    console.log(searchText);
     const endpoint = "https://api.projectpq.ai";
     const route = "/search/102?";
     var url = endpoint + route;
     const q = {
       q: searchText, // search query with the user's selected text
-      n: 30, // Get at least 30 results
-      type: "patent", // exclude research papers
+      n: numResults, // Get the requested number of results
+      type: excludePapers, // exclude research papers if requested
       token: getPQAIAPIKey(),
     };
     url = url + new URLSearchParams(q).toString();
@@ -101,7 +111,7 @@ const App = () => {
               <Row>
                 <Cell>
                   <Heading size="medium">{data.results[pat].title}</Heading>
-                  <Image src={data.results[pat].image} />
+                  <Image alt="Image unavailable" src={data.results[pat].image || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"} />
                   <Text>
                     <Strong>Author: </Strong>
                     {data.results[pat].alias}
@@ -167,6 +177,70 @@ const App = () => {
   );
 };
 
+const Settings = () => {
+  // useState is a UI kit hook we use to manage the form data in local state
+  const [formState, setFormState] = useState(undefined);
+  // Setup
+  const getNumResults = async () =>{
+	  return await storage.get('numResults');
+	}
+  var numResults = useState(async () => await getNumResults())[0];
+  if (numResults === undefined) {
+    numResults = 30
+  }
+  const getExcludePapers = async () =>{
+	  return await storage.get('excludePapers');
+	}
+  var excludePapers = useState(async () => await getExcludePapers())[0];
+  if (excludePapers === undefined) {
+    excludePapers = true;
+  }
+  else if (excludePapers == "patents") {
+    excludePapers = true;
+  } else {
+    excludePapers = false;
+  }
+  if (formState !== undefined) {
+    numResults = formState.numResults;
+    excludePapers = formState.excludePapers;
+  }
+  // Handles form submission, which is a good place to call APIs, or to set component state...
+  const onSubmit = async (formData) => {
+    /**
+     * formData:
+     * {
+     *    username: 'Username',
+     *    products: ['jira']
+     * }
+     */
+    setFormState(formData);
+    storage.set('numResults', formData.numResults);
+    if (formData.excludePapers) {
+      storage.set('excludePapers', "patents");
+    } else {
+      storage.set('excludePapers', "npl");
+    }
+  };
+
+
+  return (
+    <Fragment>
+      <Form onSubmit={onSubmit}>
+        <Toggle label="Exclude Research Papers" name="excludePapers" defaultChecked={excludePapers}/>
+        <Range
+            label="Number of Results Per Query"
+            name="numResults"
+            min={20}
+            max={50}
+            step={1}
+            defaultValue={String(numResults)}
+        />
+      </Form>
+      {formState && <Text>Your choices have been saved</Text>}
+    </Fragment>
+  );
+};
+
 export const inlineRun = render(
   <ContextMenu>
     <App />
@@ -177,4 +251,10 @@ export const fullpageRun = render(
   <ContentBylineItem>
       <App/>
   </ContentBylineItem>
+);
+
+export const settingsRun = render(
+  <GlobalSettings>
+      <Settings/>
+  </GlobalSettings>
 );
