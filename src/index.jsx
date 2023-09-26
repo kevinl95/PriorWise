@@ -60,6 +60,17 @@ async function getPageText(api, contentId) {
     }
   };
 
+  function compare( a, b ) {
+    if ( a.score < b.score ){
+      return -1;
+    }
+    if ( a.score > b.score ){
+      return 1;
+    }
+    return 0;
+  }
+  
+
 const App = () => {
   const {
     extensionContext: { selectedText },
@@ -82,19 +93,55 @@ const App = () => {
     const endpoint = "https://api.projectpq.ai";
     const route = "/search/102?";
     var url = endpoint + route;
-    const q = {
-      q: searchText, // search query with the user's selected text
-      n: numResults, // Get the requested number of results
-      type: excludePapers, // exclude research papers if requested
-      token: getPQAIAPIKey(),
-    };
-    url = url + new URLSearchParams(q).toString();
-    const response = await fetch(url, {
-      method: "get",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.text();
-    const res = JSON.parse(data);
+    var res = null;
+    if (excludePapers !== "patent") { // Interlace research papers with patents
+      var half1 = Math.floor(numResults/2);
+      var half2 = numResults - half1;
+      const q = {
+        q: searchText, // search query with the user's selected text
+        n: half1, // Get the requested number of results
+        type: "patent", // Get patents
+        token: getPQAIAPIKey(),
+      };
+      url = url + new URLSearchParams(q).toString();
+      const response = await fetch(url, {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.text();
+      const res1 = JSON.parse(data);
+      const q2 = {
+        q: searchText, // search query with the user's selected text
+        n: half2, // Get the requested number of results
+        type: "npl", // get research papers
+        token: getPQAIAPIKey(),
+      };
+      // Reset to get the rest of the results
+      url = endpoint + route;
+      url = url + new URLSearchParams(q2).toString();
+      const response2 = await fetch(url, {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data2 = await response2.text();
+      const res2 = JSON.parse(data2);
+      var sorted = res1.results.concat(res2.results).sort( compare );
+      res = {"results": sorted};
+    } else {
+      const q = {
+        q: searchText, // search query with the user's selected text
+        n: numResults, // Get the requested number of results
+        type: excludePapers, // exclude research papers if requested
+        token: getPQAIAPIKey(),
+      };
+      url = url + new URLSearchParams(q).toString();
+      const response = await fetch(url, {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.text();
+      res = JSON.parse(data);
+    }
     return res;
   });
 
@@ -144,7 +191,7 @@ const App = () => {
               <Row>
                 <Cell>
                   <Heading size="medium">{data.results[pat].title}</Heading>
-                  <Image src={data.results[pat].image} />
+                  <Image alt="Image unavailable" src={data.results[pat].image || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"} />
                   <Text>
                     <Strong>Author: </Strong>
                     {data.results[pat].alias}
