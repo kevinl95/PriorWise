@@ -51,9 +51,13 @@ async function getPageText(api, contentId) {
       var retStr = "";
       var arrayLength = content.length;
       for (var i = 0; i < arrayLength; i++) {
-          const val = content[i].content[0];
-          if (val.hasOwnProperty("text")) {
-            retStr = retStr + val.text + " ";
+          try {
+            const val = content[i].content[0];
+            if (val.hasOwnProperty("text")) {
+              retStr = retStr + val.text + " ";
+            }
+          } catch (error) {
+            // Pass, no text content
           }
       }
       return retStr;
