@@ -1,8 +1,13 @@
-# PriorWise - AI Patent/Prior Art Search for Confluence
-![Confluence](https://img.shields.io/badge/confluence-%23172BF4.svg?style=for-the-badge&logo=confluence&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+# PriorWise - AI Prior Art Search for Confluence
+![Confluence](https://img.shields.io/badge/confluence-%23172BF4.svg?style=for-the-badge&logo=confluence&logoColor=white) [![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
 
 ![logo](./priorwise.jpg)
 
+Thousands of companies, research groups, and innovators use Atlassian Confluence. They document ideas, research projects, experiments, and designs. PriorWise lets users search for prior art and research papers related to their ideas without needing to formulate a query or modify their text. PriorWise uses PQAI to intelligently parse the text the user selects or the full page they have written on Confluence, tokenizes the content, and then finds the most similar patents and research papers. The similarity is provided as a PriorWise Score, providing the similarity of the ideas as a percentage. Results are provided via the context menu, where users can simply highlight the text they wish to search, or from a content byline item which will search the entire page!
+
+![logo](./screenshot.png)
+
+There are many reasons users will want to incorporate an AI prior art search in their workflows. Firstly, it helps to safeguard against potential legal issues. If your text inadvertently infringes on existing patents, you could face costly lawsuits and legal consequences. Secondly, it promotes innovation and ethical practices. By conducting thorough searches for prior art, you ensure that your work builds upon existing knowledge rather than replicating it, contributing positively to the progress of science and technology. Additionally, it enhances the credibility of your work. Demonstrating that you have conducted due diligence in searching for prior art and respecting intellectual property rights enhances your reputation as a responsible and ethical contributor to your field, fostering trust among peers and stakeholders. Ultimately, checking for patents and prior art is not only a legal requirement in many cases but also a responsible and ethical practice that benefits both creators and society at large.
 
 ## Requirements
 
