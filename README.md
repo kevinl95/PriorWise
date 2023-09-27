@@ -1,8 +1,8 @@
-# Forge Hello World
+# PriorWise - AI Patent/Prior Art Search for Confluence
+![Confluence](https://img.shields.io/badge/confluence-%23172BF4.svg?style=for-the-badge&logo=confluence&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 
-This project contains a Forge app written in Javascript that displays `Hello World!` in a Confluence context menu. 
+![logo](./priorwise.jpg)
 
-See [developer.atlassian.com/platform/forge/](https://developer.atlassian.com/platform/forge) for documentation and tutorials explaining Forge.
 
 ## Requirements
 
@@ -10,29 +10,29 @@ See [Set up Forge](https://developer.atlassian.com/platform/forge/set-up-forge/)
 
 ## Quick start
 
-- Modify your app by editing the `src/index.jsx` file.
+- Install to your Atlassian Confluence environment by followiing [this link](https://developer.atlassian.com/console/install/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b?signature=32e0eae444ce56f9eaafce643b936a0af77c3c4dfeecf1a02b926aceb5089971429e2975be2adb3eeac6c6640da015ddcad55281c31c9cddae7c75080b730d4c&product=confluence)
 
-- Build and deploy your app by running:
+**OR TO BUILD AND DEPLOY YOURSELF:**
+
+- Request a PQAI API token [here](https://projectpq.ai/get-involved/)
+
+- Set the PQAI API Key as follows:
+``````
+forge variables set --encrypt PQAI_API_KEY your-key
+export FORGE_USER_VAR_PQAI_API_KEY=your-key
+``````
+
+- Build and deploy the app by running:
 ```
 forge deploy
 ```
 
-- Install your app in an Atlassian site by running:
+- Install the app in an Atlassian site by running:
 ```
 forge install
 ```
 
-- Develop your app by running `forge tunnel` to proxy invocations locally:
+- To get logs and other debug information for the app run `forge tunnel` to proxy invocations locally (Note: you will need Docker installed):
 ```
 forge tunnel
 ```
-
-### Notes
-- Use the `forge deploy` command when you want to persist code changes.
-- Use the `forge install` command when you want to install the app on a new site.
-- Once the app is installed on a site, the site picks up the new app changes you deploy without needing to rerun the install command.
-
-## Support
-
-See [Get help](https://developer.atlassian.com/platform/forge/get-help/) for how to get help and provide feedback.
-# PriorWise
