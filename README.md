@@ -15,7 +15,7 @@ See [Set up Forge](https://developer.atlassian.com/platform/forge/set-up-forge/)
 
 ## Quick start
 
-- Install to your Atlassian Confluence environment by followiing [this link](https://developer.atlassian.com/console/install/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b?signature=32e0eae444ce56f9eaafce643b936a0af77c3c4dfeecf1a02b926aceb5089971429e2975be2adb3eeac6c6640da015ddcad55281c31c9cddae7c75080b730d4c&product=confluence)
+- Install to your Atlassian Confluence environment by followiing [this link](https://developer.atlassian.com/console/install/2a4cc90e-1bf5-412f-ad9b-bf4f0f86254b?signature=32e0eae444ce56f9eaafce643b936a0af77c3c4dfeecf1a02b926aceb508997107c6945c1b21682033c5c01a7bc180b9a0bb742ea79310f997b8c8737abe4408&product=confluence)
 
 **OR TO BUILD AND DEPLOY YOURSELF:**
 
